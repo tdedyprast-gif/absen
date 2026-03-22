@@ -1,4 +1,4 @@
-# 🚀 Laravel Docker Setup (PHP 8.4 + Nginx + MySQL + phpMyAdmin)
+# Laravel Docker Setup (PHP 8.4 + Nginx + MySQL + phpMyAdmin)
 
 This repository provides a complete **Dockerized Laravel development environment** using:
 
