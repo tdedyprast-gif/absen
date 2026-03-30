@@ -1,20 +1,18 @@
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     container_name: laravel_app
     volumes:
       - ./:/var/www
-    env_file:
-      - .env
     depends_on:
       mysql:
         condition: service_healthy
+      redis:
+        condition: service_started
     restart: unless-stopped
 
   nginx:
-    image: nginx:1.25
+    image: nginx:1.25-alpine
     container_name: nginx_server
     ports:
       - "8000:80"
@@ -36,11 +34,59 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
-      - "3306:3306" # explain: only for local dev tools
+      - "3306:3306" # dev only
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 5s
       retries: 10
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis_server
+    ports:
+      - "6379:6379" # optional (for local tools)
+    restart: unless-stopped
+
+  queue:
+    build: .
+    container_name: laravel_queue
+    entrypoint: []
+    command: >
+      sh -c "
+      echo '⏳ Waiting for DB & migrations...' &&
+      until php artisan migrate:status > /dev/null 2>&1; do sleep 2; done &&
+      php artisan queue:work --tries=3 --timeout=90
+      "
+    volumes:
+      - ./:/var/www
+    depends_on:
+      - app
+      - redis
+    restart: unless-stopped
+
+  scheduler:
+    build: .
+    container_name: laravel_scheduler
+    entrypoint: []
+    command: >
+      sh -c "
+      echo '⏳ Waiting for DB & migrations...' &&
+      until php artisan migrate:status > /dev/null 2>&1; do sleep 2; done &&
+      php artisan schedule:work
+      "
+    volumes:
+      - ./:/var/www
+    depends_on:
+      - app
+    restart: unless-stopped
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - "8025:8025"   # Web UI
+      - "1025:1025"   # SMTP
     restart: unless-stopped
 
   phpmyadmin:
