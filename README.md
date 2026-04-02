@@ -27,7 +27,7 @@ No manual setup required.
 ```bash
 git clone <your-repo>
 cd <project>
-docker compose up -d --build
+docker compose up --build
 ```
 
 That’s it.
