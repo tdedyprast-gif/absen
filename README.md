@@ -47,25 +47,6 @@ docker compose version
 └── ...
 ```
 
----
-
-# ⚡ Quick Start (TL;DR)
-
-```bash
-git clone <your-repo-url>
-cd <project>
-
-cp .env.example .env
-
-docker compose up -d --build
-
-docker compose exec app php artisan key:generate
-docker compose exec app php artisan migrate
-```
-
-👉 Open: [http://localhost:8000](http://localhost:8000)
-
----
 
 # 🧱 Services Overview
 
@@ -96,7 +77,7 @@ cd <project>
 ## 2. Install Laravel (if not present)
 
 ```bash
-docker run --rm -v ${PWD}:/app composer create-project laravel/laravel .
+docker run --rm -v ${PWD}:/app composer create-project laravel/laravel my-app
 ```
 
 ---
