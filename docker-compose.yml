@@ -25,9 +25,9 @@ services:
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: laravel_db
-      MYSQL_USER: user
-      MYSQL_PASSWORD: user123
+      MYSQL_DATABASE: absen_db
+      MYSQL_USER: absen_user
+      MYSQL_PASSWORD: abSeN_!23
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
